@@ -9,10 +9,11 @@ public class RobotFileManager {
 
     //save arena to a file
     public static void saveArena(RobotArena arena) {
-        //file chooser activated
+        //activate suggested file chooser
         JFileChooser fileChooser = new JFileChooser();
         int option = fileChooser.showSaveDialog(null);
-        //check if file type = okay
+
+        //check if file selection was approved
         if (option == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
 
@@ -20,7 +21,7 @@ public class RobotFileManager {
                 //save arena dimensions
                 writer.println(arena.getWidth() + " " + arena.getHeight());
 
-                //save each robot pos and direction
+                //save each robot's position and direction
                 for (Robot robot : arena.getRobots()) {
                     writer.println(robot.getX() + " " + robot.getY() + " " + robot.getDirection());
                 }
@@ -32,7 +33,7 @@ public class RobotFileManager {
         }
     }
 
-    //load arena from save file
+    //load arena from a save file
     public static RobotArena loadArena() {
         JFileChooser fileChooser = new JFileChooser();
         int option = fileChooser.showOpenDialog(null);
@@ -46,7 +47,7 @@ public class RobotFileManager {
                 int height = scanner.nextInt();
                 RobotArena arena = new RobotArena(width, height);
 
-                //read each robot pos and direction
+                //read each robot's position and direction
                 while (scanner.hasNext()) {
                     int x = scanner.nextInt();
                     int y = scanner.nextInt();
@@ -54,7 +55,8 @@ public class RobotFileManager {
                     Direction direction = Direction.valueOf(directionString);
                     arena.getRobots().add(new Robot(x, y, direction));
                 }
-                //success / error handling
+
+                //success load message
                 JOptionPane.showMessageDialog(null, "Arena loaded from save file. Have fun! ");
                 return arena;
             } catch (FileNotFoundException e) {
@@ -63,6 +65,11 @@ public class RobotFileManager {
                 JOptionPane.showMessageDialog(null, "Error: This file format is invalid, please try a different file :( .");
             }
         }
-        return null;
+
+        //if loading fails, create a default arena to make life easy
+        int defaultWidth = 20;
+        int defaultHeight = 10;
+        JOptionPane.showMessageDialog(null, "Loading failed or canceled. A new arena has been created for ease :) .");
+        return new RobotArena(defaultWidth, defaultHeight);
     }
 }
